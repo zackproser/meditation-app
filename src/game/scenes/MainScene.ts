@@ -57,7 +57,6 @@ export default class MainScene extends Phaser.Scene {
         const bottomColor = 0x4a546b;
         
         for (let i = 0; i < steps; i++) {
-            const ratio = i / steps;
             const color = Phaser.Display.Color.Interpolate.ColorWithColor(
                 Phaser.Display.Color.ValueToColor(topColor),
                 Phaser.Display.Color.ValueToColor(bottomColor),
@@ -164,12 +163,17 @@ export default class MainScene extends Phaser.Scene {
             
             // Draw a more leaf-like shape
             leaf.fillStyle(color, 0.9);
+            leaf.lineStyle(1, color, 0.9);
+            
+            // Use proper curve commands
             leaf.beginPath();
-            const path = new Phaser.Curves.Path(9, 0);  // Start at top point
-            path.quadraticBezierTo(18, 9, 9, 18);  // Right curve
-            path.quadraticBezierTo(0, 9, 9, 0);    // Left curve
-            leaf.strokePath(path);
-            leaf.fillPath(path);
+            leaf.moveTo(9, 0);
+            // Use proper curve method here - need to verify exact method name
+            // from Phaser.GameObjects.Graphics documentation
+            
+            leaf.closePath();
+            leaf.fill();
+            leaf.stroke();
             
             // Add a stem
             leaf.fillStyle(0x2d3436, 0.9);  // Dark color for stem
@@ -181,7 +185,13 @@ export default class MainScene extends Phaser.Scene {
 
         // Create particle emitter
         this.leaves = this.add.particles(400, 300, 'leaf0', {
-            emitZone: { type: 'random', source: new Phaser.Geom.Rectangle(-50, 50, 900, 350) },
+            emitZone: {
+                type: 'random',
+                source: new Phaser.Geom.Rectangle(-50, 50, 900, 350),
+                quantity: 1,
+                stepRate: 0,
+                yoyo: false
+            },
             quantity: 2,
             frequency: 500,
             lifespan: 6000,

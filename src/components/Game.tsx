@@ -2,10 +2,11 @@
 import { useEffect, useRef, useState } from 'react';
 import dynamic from 'next/dynamic';
 import type Phaser from 'phaser';
+import type MainScene from '@/game/scenes/MainScene';
 
 const Game = () => {
     const gameRef = useRef<Phaser.Game | null>(null);
-    const sceneRef = useRef<any>(null);
+    const sceneRef = useRef<MainScene | null>(null);
     const [isMusicPlaying, setIsMusicPlaying] = useState(false);
     const [timeRemaining, setTimeRemaining] = useState<number | null>(null);
     const timerRef = useRef<NodeJS.Timeout | null>(null);
@@ -34,7 +35,7 @@ const Game = () => {
 
             if (!gameRef.current) {
                 gameRef.current = new Phaser.Game(config);
-                sceneRef.current = gameRef.current.scene.scenes[0];
+                sceneRef.current = gameRef.current.scene.scenes[0] as MainScene;
             }
         };
 
